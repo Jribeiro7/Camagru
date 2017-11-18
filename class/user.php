@@ -6,9 +6,14 @@ class User
 				$_name,			//nom utilisateur
 				$_mail,			//mail utilisateur
 				$_password,		//mot de passe utilisateur
+				$_pwdToken		//token reinitialisation password
 				$_image,		//image upload par l'utilisateur
 				$_filter,		//filtre selectionner par l'utilisateur
 				$_lastImages;	//liste des dernieres imgs par l'utilisateur
+
+	const		FILTER_1 = "../filters/filter1.png",
+				FILTER_2 = "../filters/filter2.png",
+				FILTER_3 = "../filters/filter3.png";
 
 	// CONSTRUCT
 
@@ -31,6 +36,26 @@ class User
 	}
 
 	// METHODS
+
+	public	function	connect($username, $password)
+	{
+	}
+
+	public	function	disconnect()
+	{
+	}
+
+	public	function	register($mail, $username, $password)
+	{
+	}
+
+	public	function	forgotPass($mail)
+	{
+	}
+
+	public	function	filterSelect($filter)
+	{
+	}
 
 	// GET
 
