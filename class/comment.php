@@ -3,8 +3,9 @@
 class comment
 {
 	protected	$_id,
+				$_idUser,
+				$_idImage,
 				$_content,
-				$_author,
 				$_date;
 
 	// CONSTRUCT

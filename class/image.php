@@ -3,9 +3,8 @@
 class Image
 {
 	protected	$_id,
-				$_image,
-				$_comments,
-				$_author,
+				$_idUser,
+				$_path,
 				$_date;
 
 	// CONSTRUCT
