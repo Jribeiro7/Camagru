@@ -53,10 +53,6 @@ class User
 	{
 	}
 
-	public	function	filterSelect($filter)
-	{
-	}
-
 	// GET
 
 	public	function	id()
