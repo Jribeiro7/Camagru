@@ -2,16 +2,18 @@
 
 class User
 {
+	private		$_db;
+
 	protected	$_id,			//id database
 				$_name,			//nom utilisateur
 				$_mail,			//mail utilisateur
 				$_password,		//mot de passe utilisateur
-				$_pwdToken		//token reinitialisation password
+				$_token			//token
 				$_image,		//image upload par l'utilisateur
 				$_filter,		//filtre selectionner par l'utilisateur
 				$_lastImages;	//liste des dernieres imgs par l'utilisateur
 
-	const		FILTER_1 = "../filters/filter1.png",
+	const		FILTER_1 = "~/http/MyWebSite/Camagru/images/filters/filter1.png",
 				FILTER_2 = "../filters/filter2.png",
 				FILTER_3 = "../filters/filter3.png";
 
@@ -39,6 +41,21 @@ class User
 
 	public	function	connect($username, $password)
 	{
+		$q = $this->_db->prepare('SELECT COUNT(*) FROM users WHERE login = :login');
+		$q->execute([':login' => $username]);
+
+		if ((bool)$q->fetchColumn() === TRUE)
+		{
+			$password = password_hash($password, PASSWORD_DEFAULT);
+			$q = $this->_db->query('SELECT password FROM users WHERE login = '.$username);
+			$dbpass = $q->fetchColumn();
+			if ($password === $dbpass)
+			{
+				return TRUE;
+			}
+		}
+		else
+			return FALSE;
 	}
 
 	public	function	disconnect()
@@ -138,6 +155,11 @@ class User
 				return ;
 		}
 		$this->_lastImages = $lastImages;
+	}
+
+	public	function	setDb(PDO $db)
+	{
+		$this->_db = $db;
 	}
 }
 ?>
