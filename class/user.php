@@ -2,12 +2,10 @@
 
 class User
 {
-	private		$_db;
-
 	protected	$_id,			//id database
 				$_name,			//nom utilisateur
-				$_mail,			//mail utilisateur
-				$_password,		//mot de passe utilisateur
+				$_email,			//mail utilisateur
+				$_pwd,			//mot de passe utilisateur
 				$_token			//token
 				$_image,		//image upload par l'utilisateur
 				$_filter,		//filtre selectionner par l'utilisateur
@@ -21,7 +19,8 @@ class User
 
 	public	function	__construct(array $data)
 	{
-		$this->hydrate($data);
+		if (!empty($data))
+			$this->hydrate($data);
 	}
 
 	// HYDRA
@@ -39,35 +38,17 @@ class User
 
 	// METHODS
 
-	public	function	connect($username, $password)
+	public	function	generateToken()
 	{
-		$q = $this->_db->prepare('SELECT COUNT(*) FROM users WHERE login = :login');
-		$q->execute([':login' => $username]);
-
-		if ((bool)$q->fetchColumn() === TRUE)
-		{
-			$password = password_hash($password, PASSWORD_DEFAULT);
-			$q = $this->_db->query('SELECT password FROM users WHERE login = '.$username);
-			$dbpass = $q->fetchColumn();
-			if ($password === $dbpass)
-			{
-				return TRUE;
-			}
-		}
-		else
-			return FALSE;
+		setToken(bin2hex(openssl_random_pseudo_bytes(16)));
 	}
 
-	public	function	disconnect()
+	public	function	sendRegisterMail()
 	{
-	}
+		$url = "http://127.0.0.1:8080/Camagru/verify.php?token=".token()."&name=".name();
+		$link = '<a href="'.$url.'">'.$url.'</a>';
 
-	public	function	register($mail, $username, $password)
-	{
-	}
-
-	public	function	forgotPass($mail)
-	{
+		mail(email(), "Camagru Mail Validation", $link);
 	}
 
 	// GET
@@ -82,14 +63,19 @@ class User
 		return $this->_name;
 	}
 
-	public	function	mail()
+	public	function	email()
 	{
-		return $this->_mail;
+		return $this->_email;
 	}
 
-	public	function	password()
+	public	function	pwd()
 	{
-		return $this->_password;
+		return $this->_pwd;
+	}
+
+	public	function	token()
+	{
+		return $this->_token;
 	}
 
 	public	function	image()
@@ -122,16 +108,22 @@ class User
 			$this->_name = $name;
 	}
 
-	public	function	setMail($mail)
+	public	function	setEmail($mail)
 	{
-		if (is_string($mail))
-			$this->_mail = $mail;
+		if (filter_var($mail, FILTER_VALIDATE_EMAIL))
+			$this->_email = $mail;
 	}
 
-	public	function	setPassword($password)
+	public	function	setPwd($password)
 	{
 		if (is_string($password))
-			$this->_password = $password;
+			$this->_pwd = password_hash($password);
+	}
+
+	public	function	setToken($token)
+	{
+		if (is_string($token))
+			$this->_token = $token;
 	}
 
 	public	function	setImage($image)
@@ -155,11 +147,6 @@ class User
 				return ;
 		}
 		$this->_lastImages = $lastImages;
-	}
-
-	public	function	setDb(PDO $db)
-	{
-		$this->_db = $db;
 	}
 }
 ?>

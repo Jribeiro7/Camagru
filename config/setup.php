@@ -5,13 +5,14 @@ require_once("database.php");
 try {
 		$db = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD);
 		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		$db->exec('CREATE DATABASE IF NOT EXISTS `camagru` DEFAULT
+		$db->exec('CREATE DATABASE IF NOT EXISTS `'.$DB_NAME.'` DEFAULT
 					CHARACTER SET utf8 COLLATE utf8_general_ci');
-		$sql = 'USE `camagru`;
+		$sql = 'USE `'.$DB_NAME.'`;
 				CREATE TABLE IF NOT EXISTS `users` (
 					`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 					`login` varchar(25) NOT NULL,
 					`mail` varchar(255) NOT NULL,
+					`valid_mail` INT DEFAULT NULL,
 					`password` varchar(255),
 					`token` varchar(255)
 				);

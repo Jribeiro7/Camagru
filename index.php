@@ -1,8 +1,8 @@
 <?PHP
 
-session_start();
+require("./class/session.php");
 
-include "views/header.php";
+$session = Session::getInstance();
 
 if (!empty($_GET['page']) && is_file("controllers/".$_GET['page'].".php"))
 {
@@ -12,7 +12,5 @@ else
 {
 	include "controllers/start.php";
 }
-
-include "views/footer.php";
 
 ?>
